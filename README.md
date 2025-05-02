@@ -1,17 +1,77 @@
 # Desafio de Projeto Bootcamp - Bradesco - Java Cloud Native 
 ## Padrões de design neste projeto.
 
+Projeto:
+Desing Patterns com Java: 
+Dos Clássicos (GoF) ao Spring Framework.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Como usar:
+Obtenha uma chave de API do Fixer: inscreva-se em https://fixer.io/ para obter uma chave de API gratuita (o plano gratuito tem algumas limitações).
+
+
+**Substitua YOUR_FIXER_API_KEY em application.properties pela sua chave real.**
+
+
++ Execute o aplicativo Spring Boot.
+
+
++ Acesse o endpoint: Abra seu navegador ou use uma ferramenta como curl ou Postman para acessar a seguinte URL, substituindo USD e BRL pelas moedas que você deseja consultar:
+  
+**http://localhost:8080/exchange/USD/BRL
+Isso retornará a taxa de câmbio de USD para BRL no formato JSON (um BigDecimal simples).**
+
+**http://localhost:8080/exchange/curriencies
+Mostra todos os tipos de alterações que a API pode realizar.**
+
+
+
 
 # 1.- Padrões de criação (como os objetos são instanciados):
   
-   **Factory Method:** O próprio Spring Framework usa extensivamente o padrão Método de Fábrica. O contêiner Spring 
+  + **Factory Method:** O próprio Spring Framework usa extensivamente o padrão Método de Fábrica. O contêiner Spring 
 atua como uma fábrica de beans. Quando você define um bean em sua configuração 
 (seja com @Component, @Service, @Controller, @Bean, etc.), o Spring cria e gerencia a 
 instância desse objeto. Neste caso, FixerApiService é um bean gerenciado pelo Spring. A interface 
 FixerApiService e sua implementação (que o OpenFeign gera dinamicamente) podem ser vistas como uma 
 maneira abstrata de criar um cliente para a API Fixer.
  
-   **Singleton:** Por padrão, os beans no Spring são singletons. Isso significa que o contêiner Spring cria 
+  + **Singleton:** Por padrão, os beans no Spring são singletons. Isso significa que o contêiner Spring cria 
 uma única instância de cada bean e a compartilha no aplicativo. FixerApiService e ExchangeRateController 
 são singletons. Isso garante que haja apenas uma instância do serviço para interagir com 
 a API do Fixer e um único controlador para lidar com solicitações de alteração de tipo.
@@ -19,30 +79,30 @@ a API do Fixer e um único controlador para lidar com solicitações de alteraç
 
  # 2. Padrões Estruturais (Como os objetos são compostos):
   
-   **Proxy:** O padrão Proxy é usado implicitamente com Spring AOP (Programação Orientada a Aspectos) e também 
+  + **Proxy:** O padrão Proxy é usado implicitamente com Spring AOP (Programação Orientada a Aspectos) e também 
 com OpenFeign. Quando você anota uma interface com @FeignClient, o Spring (via OpenFeign) cria um proxy 
 dinâmico que implementa essa interface. Este proxy manipula a comunicação HTTP com o serviço externo 
 (Fixer API). Você não escreve diretamente o código para fazer solicitações HTTP; O proxy gerado pelo 
 Feign faz isso para você.
 
-  **Facade:** O FixerApiService pode ser considerado uma Fachada. Ele encapsula a complexidade da interação 
+ + **Facade:** O FixerApiService pode ser considerado uma Fachada. Ele encapsula a complexidade da interação 
 com a API Fixer (construção de URL, manipulação de parâmetros, desserialização de resposta) e fornece 
 uma interface mais simples e coesa para o ExchangeRateController. O controlador não precisa saber os 
 detalhes de como ele se comunica com a API externa; simplesmente chama os métodos do FixerApiService.
 
  # 3. Padrões Comportamentais (como os objetos interagem):
  
-   **Estrategy:** Embora não tão evidente neste snippet, a flexibilidade do OpenFeign para configurar diferentes 
+  + **Estrategy:** Embora não tão evidente neste snippet, a flexibilidade do OpenFeign para configurar diferentes 
 codificadores (para serializar solicitações), decodificadores (para desserializar respostas) e ErrorDecoders 
 (para lidar com erros) se alinha ao padrão Strategy. Você pode definir diferentes estratégias para lidar com 
 essas tarefas e injetá-las no cliente Feign.
 
-  **Template Method:** a maneira como o OpenFeign processa uma chamada para um serviço externo (criando a 
+ + **Template Method:** a maneira como o OpenFeign processa uma chamada para um serviço externo (criando a 
 solicitação, enviando, recebendo a resposta, decodificando) segue um fluxo bem definido. Subclasses 
 (neste caso, a interface FixerApiService com suas anotações) definem as etapas específicas (a URL, os parâmetros), 
 enquanto o esqueleto geral do processo é definido pelo OpenFeign. Isso se assemelha ao padrão do Método de Modelo.
 
-  **Dependency Injection (Injeção de dependência):** este é um padrão fundamental no Spring e é claramente visível aqui. O 
+ + **Dependency Injection (Injeção de dependência):** este é um padrão fundamental no Spring e é claramente visível aqui. O 
 ExchangeRateController recebe uma instância de FixerApiService e a chave da API Fixer por meio de seu construtor. 
 Em vez de criar diretamente a instância FixerApiService ou consultar a chave, o Spring se encarrega de 
 "injetar" essas dependências. Isso promove a inversão de controle (IoC), a modularidade e facilita os testes. 
