@@ -1,5 +1,5 @@
 # Desafio de Projeto Bootcamp - Bradesco - Java Cloud Native 
-## Padrões de design nesta prática.
+## Padrões de design neste projeto.
 
 
 # 1.- Padrões de criação (como os objetos são instanciados):
